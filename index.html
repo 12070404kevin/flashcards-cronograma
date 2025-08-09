@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Flashcards - 20 Cartões (Cronograma)</title>
+  <style>
+    :root{
+      --bg:#f3f6fb; --card:#ffffff; --accent:#6c5ce7; --muted:#6b7280;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; margin:0; background:linear-gradient(180deg,#f7fafc, #eef2ff); color:#111}
+    header{padding:18px 24px; display:flex; align-items:center; gap:16px;}
+    h1{font-size:20px; margin:0}
+    p.lead{margin:0; color:var(--muted); font-size:13px}
+
+    .app{max-width:1100px; margin:18px auto; padding:18px}
+    .controls{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px}
+    .btn{background:var(--card); border:1px solid rgba(0,0,0,0.06); padding:8px 12px; border-radius:10px; cursor:pointer}
+    .btn.primary{background:var(--accent); color:#fff; border:none}
+
+    .main{display:grid; grid-template-columns: 1fr 340px; gap:18px}
+
+    /* Grid de cartões */
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:14px}
+
+    /* Card flip */
+    .card-wrap{perspective:1000px}
+    .card{width:100%; height:180px; position:relative; transform-style:preserve-3d; transition:transform .6s; cursor:pointer; border-radius:14px}
+    .card.flipped{transform:rotateY(180deg)}
+
+    .face{position:absolute; inset:0; backface-visibility:hidden; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:16px; border-radius:14px; box-shadow:0 6px 18px rgba(12,13,38,0.08)}
+    .front{background:linear-gradient(180deg,#ffffff,#fbfdff);}
+    .back{background:linear-gradient(180deg,#f8f8ff,#eef1ff); transform:rotateY(180deg)}
+
+    .q{font-weight:600; font-size:15px; text-align:center}
+    .a{font-size:14px; color:var(--muted); text-align:center}
+
+    .meta{position:absolute; top:10px; right:12px; font-size:12px; color:var(--muted)}
+    .number{position:absolute; top:10px; left:12px; font-size:12px; color:var(--muted)}
+
+    /* Cronograma */
+    .panel{background:var(--card); padding:14px; border-radius:12px; box-shadow:0 6px 20px rgba(12,13,38,0.06)}
+    .panel h3{margin-top:0; margin-bottom:10px}
+    .schedule{font-size:14px}
+    .schedule small{color:var(--muted); display:block}
+
+    footer{margin-top:16px; text-align:center; color:var(--muted); font-size:13px}
+
+    /* Responsivo */
+    @media(max-width:900px){.main{grid-template-columns:1fr}} 
+  </style>
+</head>
+<body>
+  <header>
+    <div style="width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#00b4d8);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700">FC</div>
+    <div>
+      <h1>Flashcards — 20 Cartões</h1>
+      <p class="lead">Clique no cartão para virar e ver a resposta. Cronograma sugerido incluído à direita.</p>
+    </div>
+  </header>
+
+  <main class="app">
+    <div class="main">
+      <section>
+        <div class="controls">
+          <button class="btn" id="shuffleBtn">Embaralhar</button>
+          <button class="btn" id="showAllBtn">Mostrar todas as respostas</button>
+          <button class="btn" id="resetBtn">Resetar</button>
+          <button class="btn primary" id="downloadCsv">Baixar CSV</button>
+        </div>
+
+        <div class="grid" id="cardsGrid">
+          <!-- CARTÕES AQUI: os 20 cartões são gerados pelo JavaScript a partir de cardsData -->
+        </div>
+
+        <footer>
+          Sugestão: revise 1–2 cartões por sessão e repasse os não memorizados com mais frequência.
+        </footer>
+      </section>
+
+      <aside>
+        <div class="panel">
+          <h3>Cronograma sugerido</h3>
+          <div class="schedule">
+            <strong>Plano A — 20 dias (1 cartão / dia)</strong>
+            <ul>
+              <li>Dia 1 → Cartão 1</li>
+              <li>Dia 2 → Cartão 2</li>
+              <li>Dia 3 → Cartão 3</li>
+              <li>Dia 4 → Cartão 4</li>
+              <li>Dia 5 → Cartão 5</li>
+              <li>Dia 6 → Cartão 6</li>
+              <li>Dia 7 → Cartão 7</li>
+              <li>Dia 8 → Cartão 8</li>
+              <li>Dia 9 → Cartão 9</li>
+              <li>Dia 10 → Cartão 10</li>
+              <li>Dia 11 → Cartão 11</li>
+              <li>Dia 12 → Cartão 12</li>
+              <li>Dia 13 → Cartão 13</li>
+              <li>Dia 14 → Cartão 14</li>
+              <li>Dia 15 → Cartão 15</li>
+              <li>Dia 16 → Cartão 16</li>
+              <li>Dia 17 → Cartão 17</li>
+              <li>Dia 18 → Cartão 18</li>
+              <li>Dia 19 → Cartão 19</li>
+              <li>Dia 20 → Cartão 20</li>
+            </ul>
+
+            <strong style="display:block;margin-top:10px">Plano B — 10 dias (2 cartões / dia)</strong>
+            <ul style="margin-top:6px">
+              <li>Dia 1 → Cartões 1 e 2</li>
+              <li>Dia 2 → Cartões 3 e 4</li>
+              <li>Dia 3 → Cartões 5 e 6</li>
+              <li>Dia 4 → Cartões 7 e 8</li>
+              <li>Dia 5 → Cartões 9 e 10</li>
+              <li>Dia 6 → Cartões 11 e 12</li>
+              <li>Dia 7 → Cartões 13 e 14</li>
+              <li>Dia 8 → Cartões 15 e 16</li>
+              <li>Dia 9 → Cartões 17 e 18</li>
+              <li>Dia 10 → Cartões 19 e 20</li>
+            </ul>
+
+            <small style="margin-top:8px;display:block">Dica: personalize o cronograma para sua rotina — ex.: revisar à noite ou usar intervalo entre sessões.</small>
+          </div>
+        </div>
+
+        <div style="height:12px"></div>
+
+        <div class="panel">
+          <h3>Editar cartões</h3>
+          <p style="margin:0;color:var(--muted);font-size:13px">No arquivo, procure por <code>const cardsData =</code> para alterar perguntas e respostas.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    // Dados dos cartões (edite aqui):
+    const cardsData = [
+      {q:'O que é fotossíntese?', a:'Processo das plantas que converte luz em energia química (glicose) e libera oxigênio.'},
+      {q:'Fórmula da velocidade média?', a:'v = Δs / Δt (variação do espaço sobre variação do tempo).'},
+      {q:'Definição de derivada?', a:'Limite do quociente incremental Δf/Δx quando Δx→0 — taxa de variação instantânea.'},
+      {q:'Qual a capital do Brasil?', a:'Brasília.'},
+      {q:'O que foi a Revolução Industrial?', a:'Mudança econômica e tecnológica que introduziu mecanização e fábricas, nos séculos XVIII–XIX.'},
+      {q:'O que é DNA?', a:'Molécula que carrega a informação genética dos organismos (ácido desoxirribonucleico).'},
+      {q:'Quando usar regra de três simples?', a:'Para resolver proporções diretas ou inversas entre duas grandezas.'},
+      {q:'O que é sujeito e predicado?', a:'Sujeito: quem pratica/é; Predicado: o que se afirma sobre o sujeito.'},
+      {q:'Enuncie a 2ª Lei de Newton.', a:'F = m · a (força é massa vezes aceleração).'},
+      {q:'Diferença entre população e amostra?', a:'População: conjunto total; Amostra: subconjunto representativo usado em estudos.'},
+      {q:'O que é anabolismo e catabolismo?', a:'Anabolismo: síntese de moléculas; Catabolismo: quebra para liberar energia.'},
+      {q:'O que é aquecimento global?', a:'Aumento da temperatura média da Terra devido ao acúmulo de gases de efeito estufa.'},
+      {q:'Fórmula da área do triângulo?', a:'Área = (base × altura) / 2.'},
+      {q:'O que é função injetora?', a:'Função em que elementos distintos do domínio têm imagens distintas (f(x1)=f(x2) ⇒ x1=x2).'},
+      {q:'O que era o Império Romano?', a:'Civilização antiga que dominou grande parte da Europa, Norte da África e Ásia Men
